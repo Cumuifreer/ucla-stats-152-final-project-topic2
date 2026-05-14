@@ -1,8 +1,63 @@
-# Topic 2 Temperature Prediction MVP
+# West Coast vs East Coast Seasonal Temperature Predictability
 
-This repository is an early MVP for our Stats 152 final project.
+This repository contains our Stats 152 final project notebook.
 
-The main idea is to study whether large-scale climate indices can help predict next-season temperature anomaly at one selected location. The current notebook is only a first data check. It loads the data, cleans obvious missing values, makes simple EDA checks, and outlines the next project steps.
+We study whether current-season climate indices can help predict next-season seasonal-mean temperature anomalies for the U.S. West Coast and East Coast.
+
+## Project Goal
+
+The main project question is:
+
+Can current-season Niño 3.4, PDO, and AO help predict next-season temperature anomalies for coastal regions of the western and eastern United States?
+
+We compare:
+
+- West Coast vs East Coast predictability
+- simple models vs the full multiple regression model
+- model performance across seasons
+
+The main model is multiple linear regression. More complex machine learning methods are kept as possible future extensions.
+
+## Data Sources
+
+The project uses four data files:
+
+- `data/ERA5_2mtemp_1x1.nc`: ERA5 monthly 2m temperature on a 1x1 grid
+- `data/nina34.anom.data`: Niño 3.4 monthly index
+- `data/ersst.v5.pdo.dat`: PDO monthly index
+- `data/ao.long.csv`: AO monthly index
+
+ERA5 temperature is used to compute regional seasonal temperature anomalies. Niño 3.4, PDO, and AO are converted to seasonal means and used as predictors.
+
+## Method Overview
+
+The notebook follows this analysis flow:
+
+1. Load and clean ERA5 temperature and the three climate indices.
+2. Define simple coastal proxy regions for the West Coast and East Coast.
+3. Compute area-weighted monthly temperature for each region.
+4. Convert monthly temperature to seasonal means.
+5. Compute seasonal temperature anomalies by removing each season's long-run average.
+6. Convert climate indices to seasonal means.
+7. Build a one-season-ahead prediction table.
+8. Fit and compare multiple regression models for both coasts.
+9. Use a time-ordered 80/20 train/test split for out-of-sample validation.
+10. Check residuals and interpret model performance.
+
+The notebook keeps EDA focused. It includes only basic data checks, region definitions, key correlations, and a few useful plots.
+
+## Repository Structure
+
+```text
+.
+├── README.md
+├── topic2_temperature_prediction_mvp.ipynb
+└── data/
+    ├── ERA5_2mtemp_1x1.nc
+    ├── nina34.anom.data
+    ├── ersst.v5.pdo.dat
+    └── ao.long.csv
+```
 
 ## How to Clone This Repository
 
@@ -49,27 +104,22 @@ git lfs pull
 
 This should download the real data files inside the `data/` folder. If a NetCDF file looks like a tiny text file instead of a large data file, Git LFS did not download correctly. Run `git lfs install` and `git lfs pull` again.
 
-## Data
+## How to Run
 
-The project currently uses these files:
+Open the notebook:
 
-- `data/ERA5_2mtemp_1x1.nc`: ERA5 monthly 2m temperature
-- `data/nina34.anom.data`: Nino 3.4 monthly index
-- `data/ersst.v5.pdo.dat`: PDO monthly index
-- `data/ao.long.csv`: AO monthly index
+```text
+topic2_temperature_prediction_mvp.ipynb
+```
 
-## Current Notebook
+Run the cells from top to bottom.
 
-Open `topic2_temperature_prediction_mvp.ipynb` to see the first data check.
+The notebook uses:
 
-The notebook currently:
+- pandas
+- numpy
+- xarray
+- matplotlib
+- scikit-learn
 
-- imports the needed packages
-- loads the four datasets
-- cleans obvious missing-value codes
-- makes simple EDA checks
-- combines the climate indices
-- makes one simple time series plot
-- outlines a more detailed next plan
-
-It does not run regression, prediction, train/test splitting, or residual analysis yet.
+It does not save output files or figure files. All plots are displayed inside the notebook.
