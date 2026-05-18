@@ -1,56 +1,40 @@
-# West Coast vs East Coast Seasonal Temperature Predictability
+# Climate teleconnections and coastal temperature predictability
 
-This repository contains our Stats 152 final project notebook.
+We use this repository to ask whether current-season climate indices help predict next-season temperature anomalies on the U.S. West Coast and East Coast.
 
-We study whether current-season climate indices can help predict next-season seasonal-mean temperature anomalies for the U.S. West Coast and East Coast.
+The main question is: **Do climate teleconnections leave different predictive fingerprints on the West Coast and East Coast?** In this project, a predictive fingerprint means prediction skill, coefficient pattern, and residual behavior. We keep the modeling simple, with multiple linear regression as the main model family.
 
-## Project Goal
+## Project goal
 
-The main project question is:
+We compare broad West Coast and East Coast temperature anomalies using the same climate predictors: Niño 3.4, PDO, and AO. Rather than chasing the strongest possible forecast, we use a small model family to see whether the indices leave a clearer one-season-ahead signal on one coast than the other.
 
-Can current-season Niño 3.4, PDO, and AO help predict next-season temperature anomalies for coastal regions of the western and eastern United States?
+We read the current results cautiously. There are some regional differences, especially a somewhat clearer West Coast signal, but prediction skill is limited and the later test period is often warmer than the models predict.
 
-We compare:
+## Data sources
 
-- West Coast vs East Coast predictability
-- simple models vs the full multiple regression model
-- model performance across seasons
-
-The main model is multiple linear regression. More complex machine learning methods are kept as possible future extensions.
-
-## Data Sources
-
-The project uses four data files:
+The notebook uses four local data files:
 
 - `data/ERA5_2mtemp_1x1.nc`: ERA5 monthly 2m temperature on a 1x1 grid
 - `data/nina34.anom.data`: Niño 3.4 monthly index
 - `data/ersst.v5.pdo.dat`: PDO monthly index
 - `data/ao.long.csv`: AO monthly index
 
-ERA5 temperature is used to compute regional seasonal temperature anomalies. Niño 3.4, PDO, and AO are converted to seasonal means and used as predictors.
+ERA5 is used to build regional seasonal temperature anomalies. The three climate indices are converted to seasonal means and used as current-season predictors.
 
-## Method Overview
+## Method overview
 
-The notebook follows this analysis flow:
+We first turn ERA5 monthly temperature into area-weighted regional averages for two simple coastal boxes. Then we convert monthly temperature into seasonal anomalies by removing each region's usual DJF, MAM, JJA, and SON means.
 
-1. Load and clean ERA5 temperature and the three climate indices.
-2. Define simple coastal proxy regions for the West Coast and East Coast.
-3. Compute area-weighted monthly temperature for each region.
-4. Convert monthly temperature to seasonal means.
-5. Compute seasonal temperature anomalies by removing each season's long-run average.
-6. Convert climate indices to seasonal means.
-7. Build a one-season-ahead prediction table.
-8. Fit and compare multiple regression models for both coasts.
-9. Use a time-ordered 80/20 train/test split for out-of-sample validation.
-10. Check residuals and interpret model performance.
+For the predictors, we convert Niño 3.4, PDO, and AO into seasonal means. The modeling table pairs each predictor season with the following temperature season, so the setup stays one season ahead.
 
-The notebook keeps EDA focused. It includes only basic data checks, region definitions, key correlations, and a few useful plots.
+The regression comparison uses a time-ordered 80/20 train/test split. We compare a baseline, Niño-only regression, Niño+PDO regression, and a full model with Niño 3.4, PDO, and AO. We also examine full-model residuals because positive test residuals mean the model is underpredicting warmer anomalies.
 
-## Repository Structure
+## Repository structure
 
 ```text
 .
 ├── README.md
+├── project_helpers.py
 ├── topic2_temperature_prediction_mvp.ipynb
 └── data/
     ├── ERA5_2mtemp_1x1.nc
@@ -59,67 +43,33 @@ The notebook keeps EDA focused. It includes only basic data checks, region defin
     └── ao.long.csv
 ```
 
-## How to Clone This Repository
+`project_helpers.py` keeps the repeated technical code out of the notebook. It includes climate-index parsing, seasonal means, area-weighted regional means, model metrics, model evaluation, and residual metrics.
 
-This project uses Git LFS because the ERA5 NetCDF file is large. Please install Git LFS before cloning or before pulling the data.
+## How to run
 
-### 1. Install Git LFS
-
-On macOS with Homebrew:
-
-```bash
-brew install git-lfs
-git lfs install
-```
-
-If Git LFS is already installed, just run:
+This repo uses Git LFS because the ERA5 NetCDF file is large. After cloning, run these commands from the repo root:
 
 ```bash
 git lfs install
-```
-
-### 2. Clone the repository
-
-Using SSH:
-
-```bash
-git clone git@github.com:Cumuifreer/ucla-stats-152-final-project-topic2.git
-cd ucla-stats-152-final-project-topic2
-```
-
-If SSH is not set up, use HTTPS:
-
-```bash
-git clone https://github.com/Cumuifreer/ucla-stats-152-final-project-topic2.git
-cd ucla-stats-152-final-project-topic2
-```
-
-### 3. Download the Git LFS data files
-
-After cloning, run:
-
-```bash
 git lfs pull
 ```
 
-This should download the real data files inside the `data/` folder. If a NetCDF file looks like a tiny text file instead of a large data file, Git LFS did not download correctly. Run `git lfs install` and `git lfs pull` again.
-
-## How to Run
-
-Open the notebook:
+Then open and run:
 
 ```text
 topic2_temperature_prediction_mvp.ipynb
 ```
 
-Run the cells from top to bottom.
+The notebook expects `pandas`, `numpy`, `xarray`, `matplotlib`, and `scikit-learn`. It imports helper functions from `project_helpers.py`. It does not save figures or other output files; plots display inside the notebook.
 
-The notebook uses:
+## Analysis flow
 
-- pandas
-- numpy
-- xarray
-- matplotlib
-- scikit-learn
+The notebook moves through the analysis in this order:
 
-It does not save output files or figure files. All plots are displayed inside the notebook.
+- Question and approach
+- Temperature targets
+- Climate predictors
+- One-season-ahead dataset
+- Regression comparison
+- What the model misses
+- Main takeaways
