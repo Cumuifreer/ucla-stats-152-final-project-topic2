@@ -154,6 +154,32 @@ def calculate_metrics(observed, predicted):
     }
 
 
+def compute_vif(predictor_data):
+    """Return simple variance inflation factors for model predictors."""
+    predictors = pd.DataFrame(predictor_data).copy()
+    vif_rows = []
+
+    for predictor_name in predictors.columns:
+        other_names = [name for name in predictors.columns if name != predictor_name]
+
+        if not other_names:
+            vif_value = 1.0
+        else:
+            model = LinearRegression()
+            model.fit(predictors[other_names], predictors[predictor_name])
+            fitted_values = model.predict(predictors[other_names])
+            r2 = r2_score(predictors[predictor_name], fitted_values)
+
+            if r2 >= 1 - 1e-12:
+                vif_value = np.inf
+            else:
+                vif_value = 1 / (1 - r2)
+
+        vif_rows.append({"predictor": predictor_name, "VIF": vif_value})
+
+    return pd.DataFrame(vif_rows)
+
+
 def evaluate_models(data, target_column, region_name, model_specs, train_fraction=0.80):
     """Fit the model list for one region and return metrics plus full-model residuals."""
     train_data, test_data = time_ordered_split(data, train_fraction=train_fraction)
