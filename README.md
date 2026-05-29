@@ -38,10 +38,9 @@ The regression comparison uses a time-ordered 80/20 train/test split. We compare
 ```text
 .
 ├── README.md
-├── project_helpers.py
 ├── topic2_temperature_prediction_mvp.ipynb
-├── tests/
-│   └── test_project_helpers.py
+├── coastal-temperature-prediction.pptx
+├── presentation_script.docx
 └── data/
     ├── ERA5_2mtemp_1x1.nc
     ├── nina34.anom.data
@@ -49,7 +48,7 @@ The regression comparison uses a time-ordered 80/20 train/test split. We compare
     └── ao.long.csv
 ```
 
-`project_helpers.py` keeps the repeated technical code out of the notebook. It includes climate-index parsing, seasonal means, area-weighted regional means, model metrics, model evaluation, VIF calculation, and residual metrics.
+The notebook is self-contained. It includes the small helper functions for climate-index parsing, seasonal means, area-weighted regional means, model metrics, model evaluation, VIF calculation, and residual metrics.
 
 ## How to run
 
@@ -66,13 +65,7 @@ Then open and run:
 topic2_temperature_prediction_mvp.ipynb
 ```
 
-The notebook expects `pandas`, `numpy`, `xarray`, `matplotlib`, and `scikit-learn`. It imports helper functions from `project_helpers.py`. It does not save figures or other output files; plots display inside the notebook.
-
-Optional helper checks can be run with:
-
-```bash
-python3 -m unittest tests/test_project_helpers.py
-```
+The notebook expects `pandas`, `numpy`, `xarray`, `matplotlib`, and `scikit-learn`. It does not save figures or other output files; plots display inside the notebook.
 
 ## Analysis flow
 
